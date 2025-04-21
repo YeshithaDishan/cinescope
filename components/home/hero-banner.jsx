@@ -27,7 +27,8 @@ export default function Herobanner() {
           </Button>
           <Button
             variant="outline"
-            className="bg-black/40 border-white/40 text-white hover:bg-white/20  hover:text-white hover:shadow-md hover:scale-105 transition-all duration-200"
+            className="bg-black/40 border-white/40 text-white hover:bg-white/20
+           hover:text-white hover:shadow-md hover:scale-105 transition-all duration-200"
           >
             <Film className="w-4 h-4 mr-2" />
             Latest Releases
