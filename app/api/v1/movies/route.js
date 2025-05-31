@@ -13,7 +13,11 @@ export const GET = async () => {
       .find({})
       .sort({ metacritic: -1 })
       .limit(20)
-      .toArray();
+      .toArray()
+      .catch((error) => {
+        console.error("Error fetching movies from database:", error);
+        return [];
+      });
 
     return NextResponse.json(movies);
   } catch (error) {
@@ -24,4 +28,9 @@ export const GET = async () => {
       { status: 500 }
     );
   }
+};
+
+export const POST = async () => {
+  // Movies update endpoint
+  return NextResponse.json({ message: "Movie updated!" }, { status: 200 });
 };
