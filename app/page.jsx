@@ -1,6 +1,9 @@
+import Footer from "@/components/footer";
 import HeaderNav from "@/components/header-nav"; // alias import
 import FeaturedMovies from "@/components/home/featured-movies";
 import HeroBanner from "@/components/home/hero-banner";
+
+// export const revalidate = 3600; // invalidate every hour
 
 // SSR - Server Side Rendered - Server Component
 export default function Home() {
@@ -11,7 +14,7 @@ export default function Home() {
         <HeroBanner />
         <FeaturedMovies />
       </main>
-      <footer className=" bg-amber-400 h-72">Footer Section</footer>
+      <Footer />
     </div>
   );
 }
