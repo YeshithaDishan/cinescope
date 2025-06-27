@@ -12,7 +12,7 @@ export const GET = async () => {
     // A value of -1 indicates descending order, while 1 would indicate ascending order.
 
     const movies = await db
-      .collection("movies")
+      .collection("movies_n")
       .find({})
       .sort({ metacritic: -1 })
       .limit(20)
