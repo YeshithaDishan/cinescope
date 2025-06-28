@@ -1,5 +1,5 @@
 // This is a server component
-import LoginForm from "./login-form";
+import { LoginForm } from "./login-form";
 
 // This uses SSR
 export default function LoginPage() {
