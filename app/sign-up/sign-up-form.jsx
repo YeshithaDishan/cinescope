@@ -15,8 +15,9 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { EMAIL_REGEX } from "@/lib/constants";
 import { signUp } from "@/lib/auth-client";
-import { toast } from "sonner"; // ✅ Sonner import
-import { redirect } from "next/navigation"; // optional if you want to redirect
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
+import { signInUser } from "@/lib/utils";
 
 const DEFAULT_ERROR = {
   error: false,
@@ -63,12 +64,14 @@ export function SignUpForm({ className, ...props }) {
   };
 
   const handleSubmitForm = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email")?.toString() ?? "";
-    const password = formData.get("password")?.toString() ?? "";
-    const confirmPassword = formData.get("confirm-password")?.toString() ?? "";
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirm-password");
+
+    console.log(email, password, confirmPassword);
 
     if (validateForm({ email, password, confirmPassword })) {
       await signUp.email(
@@ -78,19 +81,32 @@ export function SignUpForm({ className, ...props }) {
             console.log("onRequest", ctx);
           },
           onSuccess: () => {
-            toast.success("Account created", {
-              description: "You can now login with your credentials.",
+            // redirect to dashboard on success
+            signInUser(email, password, {
+              onSuccess: () => {
+                toast.success("Signup completed!", {
+                  description:
+                    "Your account is ready. Please log in to continue.",
+                  duration: 2500,
+                });
+                setTimeout(() => {
+                  redirect("/login");
+                }, 1500);
+              },
+              onError: (error) => {
+                toast.error("Error occurred!", {
+                  description: ctx.error.message,
+                  duration: 2000,
+                });
+              },
             });
-            // redirect("/login"); // Optional if you want automatic redirect
           },
           onError: (ctx) => {
-            toast.error("Sign up failed", {
-              description: ctx.error.message || "Something went wrong.",
+            toast.error("Error occurred!", {
+              description: ctx.error.message,
+              duration: 2000,
             });
-            setError({
-              error: true,
-              message: ctx.error.message,
-            });
+            // loading false
           },
         }
       );
@@ -132,7 +148,7 @@ export function SignUpForm({ className, ...props }) {
                 />
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="password">Confirm Password</Label>
                 <Input
                   id="confirm-password"
                   name="confirm-password"
@@ -142,6 +158,7 @@ export function SignUpForm({ className, ...props }) {
                   autoComplete="new-password"
                 />
               </div>
+              {/* Error Message Here */}
               <div className="flex justify-center">
                 {error.error && (
                   <span className="text-red-600 text-xs text-center animate-pulse duration-700">

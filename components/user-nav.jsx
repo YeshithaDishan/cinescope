@@ -14,16 +14,22 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { signOut } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UserNav() {
   const handleLogout = async () => {
     await signOut({
       fetchOptions: {
-        onSuccess: () => redirect("/login"),
+        onSuccess: () => {
+          toast.success("You've been logged out", {
+            description: "Hope to see you again soon!",
+            duration: 2000,
+          });
+          redirect("/login");
+        },
       },
     });
   };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
