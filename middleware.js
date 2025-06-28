@@ -2,13 +2,11 @@ import { NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 export function middleware(request) {
-  const sessionCookie = getSessionCookie(request);
-
+  const sessionCookie = getSessionCookie(request); // getting the session cookie
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
-  return NextResponse.next();
+  return NextResponse.next(); //  this will continue route
 }
 
 export const config = {
