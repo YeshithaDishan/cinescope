@@ -23,7 +23,7 @@ const DEFAULT_ERROR = {
 };
 
 // Client component (CSR)
-export default function LoginForm() {
+export function LoginForm() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(DEFAULT_ERROR);
 
