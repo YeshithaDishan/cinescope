@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner"; // ✅ using Sonner toast
 import { signIn } from "@/lib/auth-client";
 import { EMAIL_REGEX } from "@/lib/constants";
 
@@ -22,7 +23,6 @@ const DEFAULT_ERROR = {
   message: "",
 };
 
-// Client component (CSR)
 export function LoginForm() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(DEFAULT_ERROR);
@@ -52,21 +52,28 @@ export function LoginForm() {
   };
 
   const handleSubmitForm = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const email = formData.get("email")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
 
     if (validateForm({ email, password })) {
+      setLoading(true);
       await signIn.email(
         { email, password },
         {
           onSuccess: () => {
+            toast.success("Login successful", {
+              description: "Welcome back!",
+            });
             setLoading(false);
             redirect("/admin");
           },
           onError: (ctx) => {
+            toast.error("Login failed", {
+              description: ctx.error.message || "Something went wrong.",
+            });
             setError({
               error: true,
               message: ctx.error.message,
@@ -102,7 +109,7 @@ export function LoginForm() {
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="email">Password</Label>
+                  <Label htmlFor="password">Password</Label>
                   <Link
                     href="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -118,7 +125,6 @@ export function LoginForm() {
                   autoComplete="current-password"
                 />
               </div>
-              {/* Error Message Here */}
               <div className="flex justify-center">
                 {error.error && (
                   <span className="text-red-600 text-xs text-center animate-pulse duration-700">
@@ -128,7 +134,10 @@ export function LoginForm() {
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading && <Loader2 className="animate-spin" />} Login
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Login
                 </Button>
                 <Button
                   type="button"
